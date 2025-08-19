@@ -69,7 +69,10 @@ public abstract class BloomFilter {
      *   <li>The words/longs (numWords * 64 bit)</li>
      * </ul>
      */
-    V2(2);
+    V2(2),
+
+    // TODO
+    V3(3);
 
     private final int versionNumber;
 
@@ -224,7 +227,7 @@ public abstract class BloomFilter {
    * @param n expected insertions (must be positive)
    * @param m total number of bits in Bloom filter (must be positive)
    */
-  private static int optimalNumOfHashFunctions(long n, long m) {
+  public static int optimalNumOfHashFunctions(long n, long m) {
     // (m / n) * log(2), but avoid truncation due to division!
     return Math.max(1, (int) Math.round((double) m / n * Math.log(2)));
   }
@@ -312,6 +315,7 @@ public abstract class BloomFilter {
     return switch (version) {
       case V1 -> new BloomFilterImpl(numHashFunctions, numBits);
       case V2 -> new BloomFilterImplV2(numHashFunctions, numBits, seed);
+      case V3 -> new BloomFilterImplV3(numHashFunctions, numBits, seed);
     };
   }
 }
